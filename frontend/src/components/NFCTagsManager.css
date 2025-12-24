@@ -1,0 +1,247 @@
+.nfc-tags-manager {
+  padding: 20px;
+}
+
+.nfc-tags-manager h2 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.nfc-tags-manager .subtitle {
+  color: #999;
+  margin-bottom: 30px;
+}
+
+.create-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  margin-bottom: 20px;
+  transition: opacity 0.2s;
+}
+
+.create-button:hover {
+  opacity: 0.9;
+}
+
+.create-form {
+  background-color: #2d2d2d;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 2px solid var(--primary-color);
+}
+
+.create-form h3 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.form-row input[type="text"] {
+  flex: 1;
+  min-width: 250px;
+  padding: 10px;
+  background-color: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1em;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e0e0e0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.form-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: opacity 0.2s;
+}
+
+.form-actions button[type="submit"] {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.form-actions button[type="button"] {
+  background-color: #555;
+  color: white;
+}
+
+.form-actions button:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.form-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.table-container {
+  margin-top: 20px;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Table NFC Tags avec classe spécifique */
+.nfc-tags-table {
+  width: auto !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  background-color: #2d2d2d !important;
+}
+
+.nfc-tags-table thead {
+  background-color: #1a1a1a !important;
+}
+
+.nfc-tags-manager table {
+  border-collapse: collapse;
+  background-color: #2d2d2d;
+}
+
+.nfc-tags-manager thead {
+  background-color: #1a1a1a;
+}
+
+.nfc-tags-manager th,
+.nfc-tags-manager td {
+  padding: 4px 3px !important;
+  text-align: left;
+  border-bottom: 1px solid #3a3a3a;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Empêcher tout élément enfant de déborder */
+.nfc-tags-manager td * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.nfc-tags-manager th {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.65em;
+}
+
+/* Handle de redimensionnement des colonnes */
+.resize-handle:hover {
+  background-color: var(--primary-color) !important;
+  opacity: 0.5;
+}
+
+.resize-handle:active {
+  background-color: var(--primary-color) !important;
+  opacity: 0.8;
+}
+
+/* Contraindre les inputs */
+.nfc-tags-manager td input[type="text"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 4px 6px !important;
+  box-sizing: border-box !important;
+  font-size: 0.85em !important;
+}
+
+/* Inputs dans le formulaire de création */
+.nfc-tags-manager .form-row input[type="text"] {
+  max-width: 280px !important;
+}
+
+/* Taille des boutons d'action */
+.nfc-tags-manager .action-buttons-group {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  justify-content: flex-start;
+}
+
+.nfc-tags-manager .action-button {
+  font-size: 1em !important;
+  padding: 2px 4px !important;
+  white-space: nowrap !important;
+  width: auto !important;
+  min-width: 24px !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+}
+
+.nfc-tags-manager td {
+  color: #e0e0e0;
+}
+
+.nfc-tags-manager td input[type="checkbox"] {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+/* Boîte d'information */
+.info-box {
+  margin-top: 30px;
+  background-color: #2d2d2d;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color);
+}
+
+.info-box h4 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.info-box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-box li {
+  color: #ccc;
+  padding: 8px 0;
+  line-height: 1.5;
+}
+
+.info-box strong {
+  color: #fff;
+}

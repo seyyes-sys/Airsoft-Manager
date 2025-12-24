@@ -1,0 +1,59 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+backend/.env
+config/.env
+
+# Database
+*.db
+*.sqlite
+postgres_data/
+
+# Logs
+*.log
+*.log.*
+frontend-build.log
+build-log.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# React
+build/
+.eslintcache
+
+# Docker
+*.pid
+uploads/
+uploads_data/
+
+# Secrets et fichiers sensibles
+*secret*
+*password*
+!*.example
+!*.template

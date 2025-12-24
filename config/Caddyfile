@@ -1,0 +1,78 @@
+# Configuration Caddy pour Airsoft Manager
+# Optimisé pour production avec SSL automatique
+# Domaine: À configurer selon votre installation
+
+# ============================================================
+# AIRSOFT MANAGER
+# ============================================================
+
+{$DOMAIN:localhost} {
+    # SSL automatique (Let's Encrypt ou Cloudflare)
+    # Cloudflare automatique si domaine configuré
+    # Sinon SSL auto avec Let's Encrypt
+
+    # API Backend FastAPI
+    handle /api/* {
+        reverse_proxy airsoft-backend:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            
+            # Timeouts pour requêtes longues
+            transport http {
+                dial_timeout 30s
+                response_header_timeout 60s
+            }
+        }
+    }
+
+    # Frontend React (fichiers statiques servis par Nginx interne)
+    reverse_proxy airsoft-frontend:80 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Headers de sécurité
+    header {
+        # HSTS (HTTP Strict Transport Security)
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        
+        # Protection contre MIME-type sniffing
+        X-Content-Type-Options "nosniff"
+        
+        # Protection contre clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        
+        # Protection XSS (obsolète mais gardé pour compatibilité)
+        X-XSS-Protection "1; mode=block"
+        
+        # Politique de référent
+        Referrer-Policy "strict-origin-when-cross-origin"
+        
+        # CSP adapté pour React (unsafe-inline nécessaire)
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self';"
+        
+        # Retirer header Server pour sécurité
+        -Server
+    }
+
+    # Compression automatique
+    encode gzip zstd
+
+    # Logs
+    log {
+        output file /var/log/caddy/airsoft-access.log {
+            roll_size 100mb
+            roll_keep 5
+        }
+        format json
+    }
+}
+
+# Redirection www → non-www (si domaine configuré)
+www.{$DOMAIN:localhost} {
+    redir https://{$DOMAIN}{uri} permanent
+}
