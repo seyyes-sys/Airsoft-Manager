@@ -9,6 +9,7 @@ import ChangePassword from './ChangePassword';
 import PaymentTypesManager from './PaymentTypesManager';
 import NFCTagsManager from './NFCTagsManager';
 import MembershipApplications from './MembershipApplications';
+import PendingRegistrations from './PendingRegistrations';
 
 function AdminDashboard({ setIsAuthenticated }) {
   const [activeTab, setActiveTab] = useState('games');
@@ -20,6 +21,7 @@ function AdminDashboard({ setIsAuthenticated }) {
   const [paymentTypes, setPaymentTypes] = useState([]);
   const [nfcTags, setNfcTags] = useState([]);
   const [pendingApplicationsCount, setPendingApplicationsCount] = useState(0);
+  const [pendingRegistrationsCount, setPendingRegistrationsCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [newGame, setNewGame] = useState({
     name: '',
@@ -45,6 +47,7 @@ function AdminDashboard({ setIsAuthenticated }) {
     fetchPaymentTypes();
     fetchNFCTags();
     fetchPendingApplicationsCount();
+    fetchPendingRegistrationsCount();
   }, []);
 
   useEffect(() => {
@@ -56,6 +59,9 @@ function AdminDashboard({ setIsAuthenticated }) {
   useEffect(() => {
     if (activeTab === 'applications') {
       fetchPendingApplicationsCount();
+    }
+    if (activeTab === 'pending') {
+      fetchPendingRegistrationsCount();
     }
   }, [activeTab]);
 
@@ -144,6 +150,16 @@ function AdminDashboard({ setIsAuthenticated }) {
     } catch (err) {
       console.error('Erreur lors de la récupération du compteur de candidatures:', err);
       setPendingApplicationsCount(0);
+    }
+  };
+
+  const fetchPendingRegistrationsCount = async () => {
+    try {
+      const response = await api.get('/api/registrations/pending/count');
+      setPendingRegistrationsCount(response.data.count || 0);
+    } catch (err) {
+      console.error('Erreur lors de la récupération du compteur d\'inscriptions en attente:', err);
+      setPendingRegistrationsCount(0);
     }
   };
 
@@ -393,6 +409,16 @@ function AdminDashboard({ setIsAuthenticated }) {
             <span className="sidebar-label">Créer une partie</span>
           </button>
           <button
+            className={`sidebar-button ${activeTab === 'pending' ? 'active' : ''}`}
+            onClick={() => setActiveTab('pending')}
+          >
+            <span className="sidebar-icon">⏳</span>
+            <span className="sidebar-label">Inscriptions en attente</span>
+            {pendingRegistrationsCount > 0 && (
+              <span className="tab-badge">{pendingRegistrationsCount}</span>
+            )}
+          </button>
+          <button
             className={`sidebar-button ${activeTab === 'statistics' ? 'active' : ''}`}
             onClick={() => setActiveTab('statistics')}
           >
@@ -469,6 +495,10 @@ function AdminDashboard({ setIsAuthenticated }) {
 
         {activeTab === 'applications' && (
           <MembershipApplications />
+        )}
+
+        {activeTab === 'pending' && (
+          <PendingRegistrations onCountChange={setPendingRegistrationsCount} />
         )}
 
         {activeTab === 'rules' && (

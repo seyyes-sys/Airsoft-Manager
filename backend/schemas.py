@@ -51,6 +51,8 @@ class RegistrationResponse(BaseModel):
     bb_weight_rifle: Optional[str]
     has_second_rifle: bool
     bb_weight_rifle_2: Optional[str]
+    approval_status: str = "pending"  # pending, approved, rejected
+    rejection_reason: Optional[str] = None
     confirmed: bool
     was_present: Optional[bool]
     payment_validated: bool
@@ -58,10 +60,22 @@ class RegistrationResponse(BaseModel):
     calculated_price: Optional[int] = None  # Prix calculé selon les règles
     nfc_tag_id: Optional[int] = None  # ID du tag NFC attribué
     nfc_tag_number: Optional[str] = None  # Numéro du tag pour affichage
+    game_name: Optional[str] = None  # Nom de la partie pour affichage
+    game_date: Optional[date] = None  # Date de la partie pour affichage
     created_at: datetime
     
     class Config:
         from_attributes = True
+
+
+class RegistrationApprovalRequest(BaseModel):
+    """Schéma pour approuver une inscription"""
+    pass
+
+
+class RegistrationRejectionRequest(BaseModel):
+    """Schéma pour rejeter une inscription"""
+    rejection_reason: str = Field(..., min_length=1, max_length=500)
 
 
 class GameCreate(BaseModel):

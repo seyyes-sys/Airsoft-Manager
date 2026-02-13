@@ -149,7 +149,7 @@ function RegistrationForm() {
         <div className="form-container">
           {success && (
             <div className="success-message">
-              ✅ Inscription réussie ! Veuillez vérifier votre email pour confirmer votre inscription.
+              ✅ Demande d'inscription envoyée ! Votre inscription est en attente de validation par un administrateur. Vous recevrez un email de confirmation une fois votre inscription approuvée.
             </div>
           )}
 

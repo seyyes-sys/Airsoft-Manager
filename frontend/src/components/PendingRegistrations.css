@@ -1,0 +1,284 @@
+.pending-registrations {
+  padding: 20px;
+}
+
+.pending-registrations h2 {
+  color: #e0e0e0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ff9800;
+  padding-bottom: 10px;
+}
+
+.pending-loading,
+.pending-error {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}
+
+.pending-error {
+  color: #f44336;
+}
+
+.pending-empty {
+  background-color: #2d2d2d;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+}
+
+.pending-empty p {
+  color: #4CAF50;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.pending-count {
+  color: #ff9800;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.pending-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.pending-card {
+  background-color: #2d2d2d;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #3a3a3a;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pending-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.pending-card-header {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.pending-player-info h3 {
+  margin: 0;
+  color: white;
+  font-size: 1.3rem;
+}
+
+.pending-player-name {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+}
+
+.pending-game-info {
+  text-align: right;
+}
+
+.pending-game-name {
+  display: block;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.pending-game-date {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+}
+
+.pending-card-body {
+  padding: 15px;
+}
+
+.pending-detail {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.pending-detail:last-child {
+  border-bottom: none;
+}
+
+.pending-label {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.pending-value {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+}
+
+.pending-card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  background-color: #252525;
+  border-top: 1px solid #3a3a3a;
+}
+
+.pending-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.pending-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pending-btn:not(:disabled):hover {
+  transform: scale(1.02);
+}
+
+.pending-btn-approve {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.pending-btn-approve:not(:disabled):hover {
+  background-color: #45a049;
+}
+
+.pending-btn-reject {
+  background-color: #f44336;
+  color: white;
+}
+
+.pending-btn-reject:not(:disabled):hover {
+  background-color: #d32f2f;
+}
+
+/* Modal de rejet */
+.pending-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.pending-modal {
+  background-color: #2d2d2d;
+  border-radius: 10px;
+  padding: 25px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.pending-modal h3 {
+  margin: 0 0 15px 0;
+  color: #f44336;
+  font-size: 1.3rem;
+}
+
+.pending-modal p {
+  color: #e0e0e0;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.pending-modal strong {
+  color: #ff9800;
+}
+
+.pending-reject-reason {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.pending-reject-reason:focus {
+  outline: none;
+  border-color: #f44336;
+}
+
+.pending-reject-reason::placeholder {
+  color: #666;
+}
+
+.pending-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.pending-btn-cancel {
+  background-color: #555;
+  color: white;
+}
+
+.pending-btn-cancel:not(:disabled):hover {
+  background-color: #666;
+}
+
+.pending-btn-confirm-reject {
+  background-color: #f44336;
+  color: white;
+}
+
+.pending-btn-confirm-reject:not(:disabled):hover {
+  background-color: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pending-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .pending-card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .pending-game-info {
+    text-align: left;
+  }
+  
+  .pending-modal {
+    width: 95%;
+    padding: 20px;
+  }
+  
+  .pending-modal-actions {
+    flex-direction: column;
+  }
+  
+  .pending-btn {
+    padding: 14px;
+  }
+}

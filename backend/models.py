@@ -59,6 +59,10 @@ class Registration(Base):
     has_second_rifle = Column(Boolean, default=False)
     bb_weight_rifle_2 = Column(String, nullable=True) # Grammage Longue 2
     
+    # Statut d'approbation (pending = en attente, approved = approuvé, rejected = rejeté)
+    approval_status = Column(String, default="pending")  # pending, approved, rejected
+    rejection_reason = Column(Text, nullable=True)  # Motif de rejet si refusé
+    
     # Statut
     confirmed = Column(Boolean, default=False)
     was_present = Column(Boolean, nullable=True)

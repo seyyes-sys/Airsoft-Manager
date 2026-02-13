@@ -14,6 +14,7 @@ from database import engine, Base, get_db
 from models import User, Game, Registration, Attendance, SiteSettings, Rules, PaymentType, PartnerAssociation, PricingSettings, NFCTag, RuleVersion, MembershipApplication
 from schemas import (
     RegistrationCreate, RegistrationUpdate, RegistrationResponse,
+    RegistrationApprovalRequest, RegistrationRejectionRequest,
     GameCreate, GameResponse,
     LoginRequest, TokenResponse, ChangePasswordRequest,
     AttendanceUpdate, StatisticsResponse, GameStatistics,
@@ -27,7 +28,7 @@ from schemas import (
     MembershipApplicationCreate, MembershipApplicationResponse, MembershipApplicationStatusUpdate
 )
 from auth import create_access_token, verify_token, verify_password, hash_password
-from email_service import send_confirmation_email, send_reminder_email
+from email_service import send_confirmation_email, send_reminder_email, send_rejection_email, send_approval_email
 from scheduler import start_scheduler, stop_scheduler
 
 # Créer les tables
@@ -180,7 +181,7 @@ async def create_registration(
     registration: RegistrationCreate,
     db: Session = Depends(get_db)
 ):
-    """Créer une nouvelle inscription"""
+    """Créer une nouvelle inscription (en attente de validation admin)"""
     # Vérifier qu'il existe une partie active ET non clôturée
     active_game = db.query(Game).filter(
         Game.date >= datetime.now().date(),
@@ -194,7 +195,7 @@ async def create_registration(
             detail="Aucune partie active disponible pour inscription"
         )
     
-    # Créer l'inscription
+    # Créer l'inscription avec statut "pending" (en attente de validation)
     new_registration = Registration(
         game_id=active_game.id,
         first_name=registration.first_name,
@@ -209,6 +210,7 @@ async def create_registration(
         bb_weight_rifle=registration.bb_weight_rifle,
         has_second_rifle=registration.has_second_rifle,
         bb_weight_rifle_2=registration.bb_weight_rifle_2,
+        approval_status="pending",  # En attente de validation admin
         confirmed=False
     )
     
@@ -216,16 +218,8 @@ async def create_registration(
     db.commit()
     db.refresh(new_registration)
     
-    # Envoyer l'email de confirmation
-    try:
-        await send_confirmation_email(
-            email=registration.email,
-            first_name=registration.first_name,
-            game_date=active_game.date,
-            registration_id=new_registration.id
-        )
-    except Exception as e:
-        print(f"Erreur envoi email: {e}")
+    # L'email de confirmation sera envoyé après approbation par l'admin
+    # Plus d'envoi automatique ici
     
     return new_registration
 
@@ -250,6 +244,169 @@ async def confirm_registration(
     db.commit()
     
     return {"message": "Inscription confirmée avec succès"}
+
+
+# ===== ENDPOINTS APPROBATION DES INSCRIPTIONS =====
+
+@app.get("/api/registrations/pending/count")
+async def get_pending_registrations_count(
+    admin: str = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """Récupérer le nombre d'inscriptions en attente de validation (admin)"""
+    count = db.query(Registration).filter(
+        Registration.approval_status == "pending"
+    ).count()
+    
+    return {"count": count}
+
+
+@app.get("/api/registrations/pending", response_model=List[RegistrationResponse])
+async def get_pending_registrations(
+    admin: str = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """Récupérer toutes les inscriptions en attente de validation (admin)"""
+    registrations = db.query(Registration).filter(
+        Registration.approval_status == "pending"
+    ).order_by(Registration.created_at.desc()).all()
+    
+    # Enrichir avec les infos de la partie
+    result = []
+    for reg in registrations:
+        game = db.query(Game).filter(Game.id == reg.game_id).first()
+        
+        reg_dict = {
+            "id": reg.id,
+            "game_id": reg.game_id,
+            "first_name": reg.first_name,
+            "last_name": reg.last_name,
+            "nickname": reg.nickname,
+            "email": reg.email,
+            "phone": reg.phone,
+            "attendance_type": reg.attendance_type,
+            "has_association": reg.has_association,
+            "association_name": reg.association_name,
+            "bb_weight_pistol": reg.bb_weight_pistol,
+            "bb_weight_rifle": reg.bb_weight_rifle,
+            "has_second_rifle": reg.has_second_rifle,
+            "bb_weight_rifle_2": reg.bb_weight_rifle_2,
+            "approval_status": reg.approval_status,
+            "rejection_reason": reg.rejection_reason,
+            "confirmed": reg.confirmed,
+            "was_present": reg.was_present,
+            "payment_validated": reg.payment_validated,
+            "payment_type_id": reg.payment_type_id,
+            "calculated_price": calculate_registration_price(reg, db),
+            "nfc_tag_id": reg.nfc_tag_id,
+            "nfc_tag_number": None,
+            "game_name": game.name if game else None,
+            "game_date": game.date if game else None,
+            "created_at": reg.created_at
+        }
+        result.append(reg_dict)
+    
+    return result
+
+
+@app.post("/api/registrations/{registration_id}/approve")
+async def approve_registration(
+    registration_id: int,
+    admin: str = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """Approuver une inscription en attente (admin)"""
+    registration = db.query(Registration).filter(
+        Registration.id == registration_id
+    ).first()
+    
+    if not registration:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Inscription non trouvée"
+        )
+    
+    if registration.approval_status != "pending":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cette inscription n'est pas en attente de validation"
+        )
+    
+    # Récupérer la partie associée
+    game = db.query(Game).filter(Game.id == registration.game_id).first()
+    if not game:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Partie non trouvée"
+        )
+    
+    # Approuver l'inscription
+    registration.approval_status = "approved"
+    db.commit()
+    
+    # Envoyer l'email d'approbation avec le lien de confirmation
+    try:
+        await send_approval_email(
+            email=registration.email,
+            first_name=registration.first_name,
+            game_date=game.date,
+            registration_id=registration.id
+        )
+    except Exception as e:
+        print(f"Erreur envoi email d'approbation: {e}")
+    
+    return {"message": "Inscription approuvée avec succès"}
+
+
+@app.post("/api/registrations/{registration_id}/reject")
+async def reject_registration(
+    registration_id: int,
+    rejection_data: RegistrationRejectionRequest,
+    admin: str = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """Rejeter une inscription en attente (admin)"""
+    registration = db.query(Registration).filter(
+        Registration.id == registration_id
+    ).first()
+    
+    if not registration:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Inscription non trouvée"
+        )
+    
+    if registration.approval_status != "pending":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cette inscription n'est pas en attente de validation"
+        )
+    
+    # Récupérer la partie associée
+    game = db.query(Game).filter(Game.id == registration.game_id).first()
+    if not game:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Partie non trouvée"
+        )
+    
+    # Rejeter l'inscription
+    registration.approval_status = "rejected"
+    registration.rejection_reason = rejection_data.rejection_reason
+    db.commit()
+    
+    # Envoyer l'email de rejet
+    try:
+        await send_rejection_email(
+            email=registration.email,
+            first_name=registration.first_name,
+            game_date=game.date,
+            rejection_reason=rejection_data.rejection_reason
+        )
+    except Exception as e:
+        print(f"Erreur envoi email de rejet: {e}")
+    
+    return {"message": "Inscription rejetée"}
 
 
 @app.get("/api/games", response_model=List[GameResponse])
@@ -330,10 +487,15 @@ async def get_game_registrations(
     admin: str = Depends(get_current_admin),
     db: Session = Depends(get_db)
 ):
-    """Récupérer les inscriptions d'une partie (admin)"""
+    """Récupérer les inscriptions approuvées d'une partie (admin)"""
+    # Ne montrer que les inscriptions approuvées dans la liste des parties
     registrations = db.query(Registration).filter(
-        Registration.game_id == game_id
+        Registration.game_id == game_id,
+        Registration.approval_status == "approved"
     ).all()
+    
+    # Récupérer la partie pour les infos
+    game = db.query(Game).filter(Game.id == game_id).first()
     
     # Calculer le prix pour chaque inscription
     result = []
@@ -360,6 +522,8 @@ async def get_game_registrations(
             "bb_weight_rifle": reg.bb_weight_rifle,
             "has_second_rifle": reg.has_second_rifle,
             "bb_weight_rifle_2": reg.bb_weight_rifle_2,
+            "approval_status": reg.approval_status,
+            "rejection_reason": reg.rejection_reason,
             "confirmed": reg.confirmed,
             "was_present": reg.was_present,
             "payment_validated": reg.payment_validated,
@@ -367,6 +531,8 @@ async def get_game_registrations(
             "calculated_price": calculate_registration_price(reg, db),
             "nfc_tag_id": reg.nfc_tag_id,
             "nfc_tag_number": nfc_tag_number,
+            "game_name": game.name if game else None,
+            "game_date": game.date if game else None,
             "created_at": reg.created_at
         }
         result.append(reg_dict)
