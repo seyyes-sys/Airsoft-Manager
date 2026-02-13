@@ -1,0 +1,335 @@
+.membership-applications {
+  padding: 20px;
+}
+
+.applications-header {
+  margin-bottom: 30px;
+}
+
+.applications-header h2 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+  font-size: 1.8em;
+}
+
+.applications-header p {
+  color: #a89d7e;
+  font-size: 0.95em;
+}
+
+.message {
+  padding: 15px 20px;
+  border-radius: 3px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.message.success {
+  background-color: #2d3a16;
+  border-left: 4px solid var(--primary-color);
+  color: #b5c68a;
+}
+
+.message.error {
+  background-color: #4d1f0f;
+  border-left: 4px solid #CC3300;
+  color: #dba88a;
+}
+
+.applications-controls {
+  margin-bottom: 30px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-buttons button {
+  padding: 10px 20px;
+  background-color: #252d1e;
+  color: #d4cba8;
+  border: 2px solid #3a4230;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95em;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.filter-buttons button:hover {
+  background-color: #3a4230;
+  border-color: var(--primary-color);
+}
+
+.filter-buttons button.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #a89d7e;
+  font-size: 1.1em;
+}
+
+.no-applications {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.no-applications p {
+  font-size: 1.1em;
+}
+
+.applications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 25px;
+}
+
+.application-card {
+  background-color: #252d1e;
+  border: 1px solid #3a4230;
+  border-radius: 4px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.application-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(107, 142, 35, 0.2);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #3a4230;
+}
+
+.applicant-info h3 {
+  color: #d4cba8;
+  margin-bottom: 5px;
+  font-size: 1.3em;
+}
+
+.application-date {
+  color: #999;
+  font-size: 0.85em;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-pending {
+  background-color: #D4A017;
+  color: white;
+}
+
+.status-approved {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.status-rejected {
+  background-color: #CC3300;
+  color: white;
+}
+
+.card-content {
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 0.9em;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #a89d7e;
+  min-width: 180px;
+}
+
+.info-item span:last-child {
+  color: #d4cba8;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.details-button,
+.approve-button,
+.reject-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.details-button {
+  flex: 1;
+  background-color: #3a4230;
+  color: white;
+}
+
+.details-button:hover {
+  background-color: #4a4a4a;
+}
+
+.approve-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.approve-button:hover:not(:disabled) {
+  background-color: #5a7a1e;
+}
+
+.reject-button {
+  background-color: #CC3300;
+  color: white;
+}
+
+.reject-button:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.approve-button:disabled,
+.reject-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Modal détails */
+.application-details-modal {
+  background-color: #252d1e;
+  border-radius: 4px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.application-details-modal h2 {
+  color: var(--primary-color);
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+.details-section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #3a4230;
+}
+
+.details-section:last-of-type {
+  border-bottom: none;
+}
+
+.details-section h3 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  font-size: 1.3em;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-item strong {
+  color: #a89d7e;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-item span {
+  color: #d4cba8;
+  font-size: 1em;
+}
+
+.motivation-text {
+  background-color: #1a1a1a;
+  padding: 15px;
+  border-radius: 3px;
+  color: #d4cba8;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.status-date {
+  color: #999;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #3a4230;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 15px;
+  font-size: 1em;
+}
+
+@media (max-width: 768px) {
+  .applications-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .application-details-modal {
+    padding: 30px 20px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .filter-buttons {
+    flex-direction: column;
+  }
+
+  .filter-buttons button {
+    width: 100%;
+  }
+}
