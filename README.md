@@ -13,13 +13,16 @@
 
 ### 🎮 Pour les Joueurs
 - **Inscription en ligne** avec formulaire simple et intuitif
-- **Confirmation email** automatique après inscription
+- **Validation admin** des inscriptions avant confirmation
+- **Confirmation email** automatique après approbation
+- **Notification de rejet** avec motif si inscription refusée
 - **Rappels automatiques J-2** avant chaque partie
 - **Candidature en ligne** pour devenir membre
 - Interface responsive (mobile, tablette, desktop)
 
 ### 👨‍💼 Pour les Administrateurs
-- **Interface admin moderne** avec sidebar verticale (10 onglets)
+- **Interface admin moderne** avec sidebar verticale (11 onglets)
+- **Inscriptions en attente** : approbation/rejet avec motif et badge notification
 - **Gestion complète des parties** : création, clôture, statistiques
 - **Tableau des inscriptions** avec filtres et recherche
 - **Lightning Tags NFC** : création, attribution, disponibilité
